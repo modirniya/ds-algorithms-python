@@ -8,48 +8,48 @@ class LinkedList:
             return f'{self.value} | {str(id(self))[-4:]}'
 
     def __init__(self):
-        self.first = None
-        self.last = None
+        self._first = None
+        self._last = None
         self._size = 0
 
     def add_first(self, value):
         node = self._Node(value)
         if self.is_empty:
-            self.first = self.last = node
+            self._first = self._last = node
         else:
-            node.next = self.first
-            self.first = node
+            node.next = self._first
+            self._first = node
         self._size += 1
 
     def remove_first(self):
         if self.is_empty:
             raise Exception("No such element")
-        if self.first == self.last:
-            self.first = self.last = None
+        if self._first == self._last:
+            self._first = self._last = None
         else:
-            temp = self.first.next
-            self.first.next = None
-            self.first = temp
+            temp = self._first.next
+            self._first.next = None
+            self._first = temp
         self._size -= 1
 
     def add_last(self, value):
         node = self._Node(value)
         if self.is_empty:
-            self.first = self.last = node
+            self._first = self._last = node
         else:
-            self.last.next = node
-            self.last = node
+            self._last.next = node
+            self._last = node
         self._size += 1
 
     def remove_last(self):
         if self.is_empty:
             raise Exception("No such element")
-        if self.first == self.last:
-            self.first = self.last = None
+        if self._first == self._last:
+            self._first = self._last = None
         else:
-            prev = self.get_previous(self.last)
+            prev = self.get_previous(self._last)
             prev.next = None
-            self.last = prev
+            self._last = prev
         self._size -= 1
 
     def get_previous(self, target):
@@ -59,7 +59,7 @@ class LinkedList:
         return None
 
     def iter_nodes(self):
-        ptr = self.first
+        ptr = self._first
         while ptr:
             yield ptr
             ptr = ptr.next
@@ -82,7 +82,7 @@ class LinkedList:
 
     @property
     def is_empty(self):
-        return self.first is None
+        return self._first is None
 
     @property
     def size(self):
