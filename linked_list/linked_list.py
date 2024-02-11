@@ -1,18 +1,32 @@
 class LinkedList:
     class _Node:
-        def __init__(self, value, next=None):
-            self.value = value
+        def __init__(self, content, next=None):
+            self.content = content
             self.next = next
 
         def __repr__(self):
-            return f'{self.value} | {str(id(self))[-4:]}'
+            return f'{self.content} | {str(id(self))[-4:]}'
 
     def __init__(self):
         self._first = None
         self._last = None
         self._size = 0
 
-    def add_first(self, value):
+    def get_by_index(self, index) -> _Node | None:
+        for i, node in enumerate(self.iter_nodes()):
+            if i == index: return node
+        return None
+
+    def append(self, value):
+        node = self._Node(value)
+        if self.is_empty:
+            self._first = self._last = node
+        else:
+            self._last.next = node
+            self._last = node
+        self._size += 1
+
+    def prepend(self, value):
         node = self._Node(value)
         if self.is_empty:
             self._first = self._last = node
@@ -21,7 +35,7 @@ class LinkedList:
             self._first = node
         self._size += 1
 
-    def remove_first(self):
+    def pop(self):
         if self.is_empty:
             raise Exception("No such element")
         if self._first == self._last:
@@ -32,27 +46,32 @@ class LinkedList:
             self._first = temp
         self._size -= 1
 
-    def add_last(self, value):
-        node = self._Node(value)
-        if self.is_empty:
-            self._first = self._last = node
-        else:
-            self._last.next = node
-            self._last = node
-        self._size += 1
-
-    def remove_last(self):
+    def pop_back(self):
         if self.is_empty:
             raise Exception("No such element")
         if self._first == self._last:
             self._first = self._last = None
         else:
-            prev = self.get_previous(self._last)
+            prev = self.get_previous_node(self._last)
             prev.next = None
             self._last = prev
         self._size -= 1
 
-    def get_previous(self, target):
+    def remove(self, target: _Node):
+        if not self.contains(target.content):
+            return
+        prev_node = self.get_previous_node(target)
+        if prev_node is None:
+            self.pop()
+        else:
+            if target.next is None:
+                self.pop_back()
+            else:
+                prev_node.next = target.next
+                target.next = None
+                self._size -= 1
+
+    def get_previous_node(self, target: _Node):
         for node in self.iter_nodes():
             if node.next is target:
                 return node
@@ -64,14 +83,14 @@ class LinkedList:
             yield ptr
             ptr = ptr.next
 
-    def index_of(self, value):
+    def find_index(self, value):
         for idx, node in enumerate(self.iter_nodes()):
-            if node.value == value:
+            if node.content == value:
                 return idx
         return -1
 
     def contains(self, value):
-        return self.index_of(value) != -1
+        return self.find_index(value) != -1
 
     @property
     def as_list(self):
@@ -89,5 +108,5 @@ class LinkedList:
         return self._size
 
     def __str__(self):
-        elements = [str(node.value) for node in self.iter_nodes()]
+        elements = [str(node.content) for node in self.iter_nodes()]
         return ' --> '.join(elements) + ' --> None'
