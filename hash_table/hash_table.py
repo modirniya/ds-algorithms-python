@@ -21,14 +21,14 @@ class HashTable:
 
     def put(self, key, value):
         index = self._hash(key)
-        existing_entry = self._get(key)
+        existing_entry = self.get_node(key)
         if (existing_entry is None):
             entry = HashTable._KeyValueEntry(key, value)
             self.entries[index].append(entry)
         else:
             existing_entry.content.value = value
 
-    def _get(self, key)-> LinkedList | None:
+    def get_node(self, key) :
         index = self._hash(key)
         for entry in self.entries[index].iter_nodes():
             if entry.content.key == key:
@@ -36,7 +36,7 @@ class HashTable:
         return None
 
     def get(self, key):
-        res = self._get(key)
+        res = self.get_node(key)
         if (res is None):
             return None
         else:
@@ -44,21 +44,24 @@ class HashTable:
 
     def remove(self, key):
         index = self._hash(key)
-        node = self._get(key)
+        node = self.get_node(key)
         if (node is not None):
             self.entries[index].remove(node)
 
-    def _hash(self, key) -> int:
-        return key % len(self.entries)
+    def _hash(self, key: str) -> int:
+        hash = 0
+        for char in key:
+            hash += ord(char)
+        return hash % len(self.entries)
 
 
 if __name__ == '__main__':
     ht = HashTable()
-    ht.put(19, "A")
-    ht.put(14, "B")
-    ht.put(14, "C")
-    print(ht.get(14))
-    ht.remove(14)
-    print(ht.get(14))
-    print(ht.get(19))
-    print(ht.get(9))
+    ht.put("aabb", "A")
+    ht.put("abab", "B")
+    ht.put("baba", "C")
+    print(ht.get("aabb"))
+    ht.remove("aabb")
+    print(ht.get("aabb"))
+    print(ht.get("abab"))
+    print(ht.get("baba"))
